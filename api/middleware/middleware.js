@@ -35,11 +35,12 @@ function validateAction() {
       res.status(400).json({
         message: "missing action data"
       })
-    } else if (!req.body.projectId || !req.body.description || !req.body.notes) {
+    } else if (!req.body.project_id || !req.body.description || !req.body.notes) {
       res.status(400).json({
         message: "missing required field"
       })
     }
+    next()
   }
 }
 
@@ -61,7 +62,6 @@ function validateProjectId() {
               message: "Error finding that project"
             })
           })
-    next()
   }
 }
 
