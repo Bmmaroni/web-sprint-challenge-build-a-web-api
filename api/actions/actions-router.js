@@ -1,7 +1,7 @@
 // Write your "actions" router here!
 const express = require("express")
-const { whereNotExists } = require("../../data/dbConfig")
 const actions = require("./actions-model")
+const { validateActionId, validateAction } = require("../middleware/middleware")
 
 const router = express.Router()
 
@@ -13,25 +13,30 @@ router.get("/api/actions", (req, res) => {
         .catch( err => {next(err)})
 })
 
-router.get("/api/actions/:id", (req, res) => {
-  actions.get(req.params.id)
+router.get("/api/actions/:id", validateActionId(), (req, res) => {
+  res.json(res.action)
+})
+
+router.post("/api/actions", validateAction(), (req, res) => {
+  actions.insert(req.body) // is a req.params.id needed here?
         .then(action => {
-          res.json(action)
+          res.status(201).json(action)
         })
         .catch( err => {next(err)})
-
 })
 
-router.post("/api/actions", (req, res) => {
-
+router.put("/api/actions/:id", validateAction(), validateActionId(), (req, res) => {
+  actions.update(req.params.id, req.body)
+        .then(action => {
+          res.status(200).json(action)
+        })
+        .catch( err => {next(err)})
 })
 
-router.put("/api/actions/:id", (req, res) => {
-
-})
-
-router.delete("/api/actions/:id", (req, res) => {
-
+router.delete("/api/actions/:id", validateActionId(), (req, res) => {
+  actions.delete(req.params.id)
+        .then(action => {res.status(204).end()})
+        .catch( err => {next(err)})
 })
 
 
